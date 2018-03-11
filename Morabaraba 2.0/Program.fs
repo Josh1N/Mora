@@ -3,35 +3,7 @@
 // Learn more about F# at http://fsharp.org
 // See the 'F# Tutorial' project for more help.
 
-(*let validPositions = ["A1"; "A4"; "A7"; "B2"; "B4"; "B6"; "C3"; "C4"; "C5"; "D1"; "D2"; "D3"; "D5"; "D6"; "D7"; "E3"; "E4"; "E5"; "F2"; "F4"; "F6"; "G1"; "G4"; "G7"]
-
-let A1 = 'X'
-let A4 = 'O'
-let A7 = 'O'
-let B2 = 'O'
-let B4 = 'O'
-let B6 = 'O'
-let C3 = 'O'
-let C4 = 'O'
-let C5 = 'O'
-let D1 = 'O'
-let D2 = 'O'
-let D3 = 'O'
-let D5 = 'O'
-let D6 = 'O'
-let D7 = 'O'
-let E3 = 'O'
-let E4 = 'O'
-let E5 = 'O'
-let F2 = 'O'
-let F4 = 'O'
-let F6 = 'O'
-let G1 = 'O'
-let G4 = 'O'
-let G7 = 'O'
-
-
-
+(*
 let printBoard = 
     printf "  1  2  3  4  5  6  7  \n" 
     printf "A %c--------%c--------%c  \n" 'O' 'O' 'O'
@@ -48,22 +20,25 @@ let printBoard =
     printf "  | /      |      \ |  \n"
     printf "G %c--------%c--------%c  \n" 'O' 'O' 'O'
 
-
-
-
 let mills = [("A1","A4","A7");("B2","B4","B6");("C3","C4","C5");("D1","D2","D3");("D5","D6","D7");("E3","E4","E5");("F2","F4","F6");("G1","G4","G7");("A1","D1","G1");("B2","D2","F2");("C3","D3","E3");("A4","B4","C4");("E4","F4","G4");("C5","D5","E5");("B6","D6","F6");("A7","D7","G7");("A1","B2","C3");("A7","B6","C5");("G1","F2","E3");("G7","F6","E5")]
 
-let updatePosition= 
-     A1 ='X'
-     printBoard
 *)
-type Cell=
-| Black
-| White
-| Blank
+
+(*  
+    above are the remnants of our second attempt approach, 
+    the following code is our next approach where we decided 
+    to follow the structure of the TicTacToe example as closely
+    as possible while adapting it to the Morabaraba gameplay.
+*)
 
 
-type GameBoard =
+
+type Cell=  // Black and White being the opposing teams
+| Black     // Black will be represented by a 'B' character on the board
+| White     // White will be represented by a 'W' character on the board
+| Blank     // for positions not occupied by cows on the board 
+
+type GameBoard =    // a record with a field of tuples of tuple for all the valid positions on each row of the board
 | Board of (Cell*Cell*Cell)*
            (Cell*Cell*Cell)*
            (Cell*Cell*Cell)*
@@ -72,39 +47,34 @@ type GameBoard =
            (Cell*Cell*Cell)*
            (Cell*Cell*Cell)
 
-type State = 
+type State =    // a field for each state
 |Placing of GameBoard
 |Moving of GameBoard
 |Flying of GameBoard
+// will also need on for winning and drawing (is it possible to draw in Morabaraba?)
 
-let swapPlayer x=
+let swapPlayer x=   // how turns will be implemented 
     match x with 
     |Black ->White
     |White ->Black
-    |Blank -> failwith "Noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
-
-
-
-
+    |Blank -> Blank //failwith "Nooooooooooooooooooooo" // maybe change this to Blank ]
+                    // nope no sense made 
            
-let blankBoard =
+let blankBoard =    // creating a Gameboard with all blank positions 
     let blankRow = Blank,Blank, Blank
-    let blankRowLong= Blank,Blank, Blank,Blank,Blank, Blank
-
-
- 
+    let blankRowLong= Blank,Blank, Blank,Blank,Blank, Blank 
     Board (blankRow, blankRow, blankRow, blankRowLong, blankRow,blankRow, blankRow)
     
 let printBoard (Board (rowA, rowB, rowC,rowD, rowE,rowF, rowG)) =
     System.Console.Clear ()
     let printCells cell =
         match cell with
-        | B -> 'B'
-        | W -> 'W'
+        | Black -> 'B'  // why aren't these matching cell with Black and White? 
+        | White -> 'W'
         | Blank -> 'O'
 
     printf "  1  2  3  4  5  6  7  \n" 
-    let (x,y,z)=rowA
+    let (x,y,z)=rowA 
     printf "A %c--------%c--------%c  \n" (printCells x) (printCells y) (printCells z)
     printf "  | \      |      / |  \n" 
     let (x,y,z)=rowB
@@ -123,134 +93,208 @@ let printBoard (Board (rowA, rowB, rowC,rowD, rowE,rowF, rowG)) =
     printf "F |  %c-----%c-----%c  |  \n" (printCells x) (printCells y) (printCells z)
     printf "  | /      |      \ |  \n"
     let (x,y,z)=rowG
-    printf "G %c--------%c--------%c  \n" (printCells x) (printCells y) (printCells z)
+    printf "G %c--------%c--------%c  \n\n" (printCells x) (printCells y) (printCells z)
 
-let available board position =
+let available board position =  // uses pattern matching to check if the given position is occupied or not
+                                // and if not, whether it is Black or White
     match position with
-    |'A', y ->
+    |'A', y ->              
         match y with 
         |'1' ->
             match board with
-            |Board((Blank,_,_),_,_,_,_,_,_) -> true
-            |_ -> false
+            |Board((Blank,_,_),_,_,_,_,_,_) -> "Blank"
+            |Board((Black,_,_),_,_,_,_,_,_) -> "Black"
+            |Board((White,_,_),_,_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'4' ->
             match board with
-            |Board((_,Blank,_),_,_,_,_,_,_) -> true
-            |_ -> false
+            |Board((_,Blank,_),_,_,_,_,_,_) -> "Blank"
+            |Board((_,Black,_),_,_,_,_,_,_) -> "Black"
+            |Board((_,White,_),_,_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'7'  ->
             match board with
-            |Board((_,_,Blank),_,_,_,_,_,_) -> true
-            |_ -> false
+            |Board((_,_,Blank),_,_,_,_,_,_) -> "Blank"
+            |Board((_,_,Black),_,_,_,_,_,_) -> "Black"
+            |Board((_,_,White),_,_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
     |'B', y ->
         match y with 
         |'2' ->
             match board with
-            |Board(_,(Blank,_,_),_,_,_,_,_) -> true
-            |_ -> false
+            |Board(_,(Blank,_,_),_,_,_,_,_) -> "Blank"
+            |Board(_,(Black,_,_),_,_,_,_,_) -> "Black"
+            |Board(_,(White,_,_),_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'4' ->
             match board with
-            |Board(_,(_,Blank,_),_,_,_,_,_) -> true
-            |_ -> false
+            |Board(_,(_,Blank,_),_,_,_,_,_) -> "Blank"
+            |Board(_,(_,Black,_),_,_,_,_,_) -> "Black"
+            |Board(_,(_,White,_),_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'6'  ->
             match board with
-            |Board(_,(_,_,Blank),_,_,_,_,_) -> true
-            |_ -> false
+            |Board(_,(_,_,Blank),_,_,_,_,_) -> "Blank"
+            |Board(_,(_,_,Black),_,_,_,_,_) -> "Black"
+            |Board(_,(_,_,White),_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
     |'C', y ->
         match y with 
         |'3' ->
             match board with
-            |Board(_,_,(Blank,_,_),_,_,_,_) -> true
-            |_ -> false
+            |Board(_,_,(Blank,_,_),_,_,_,_) -> "Blank"
+            |Board(_,_,(Black,_,_),_,_,_,_) -> "Black"
+            |Board(_,_,(White,_,_),_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'4' ->
             match board with
-            |Board(_,_,(_,Blank,_),_,_,_,_) -> true
-            |_ -> false
+            |Board(_,_,(_,Blank,_),_,_,_,_) -> "Blank"
+            |Board(_,_,(_,Black,_),_,_,_,_) -> "Black"
+            |Board(_,_,(_,White,_),_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'5'  ->
             match board with
-            |Board(_,_,(_,_,Blank),_,_,_,_) -> true
-            |_ -> false
+            |Board(_,_,(_,_,Blank),_,_,_,_) -> "Blank"
+            |Board(_,_,(_,_,Black),_,_,_,_) -> "Black"
+            |Board(_,_,(_,_,White),_,_,_,_) -> "White"
+            |_ -> failwith "wut"
     |'D', y ->
         match y with 
         |'1' ->
             match board with
-            |Board(_,_,_,(Blank,_,_,_,_,_),_,_,_) -> true
-            |_ -> false
+            |Board(_,_,_,(Blank,_,_,_,_,_),_,_,_) -> "Blank"
+            |Board(_,_,_,(Black,_,_,_,_,_),_,_,_) -> "Black"
+            |Board(_,_,_,(White,_,_,_,_,_),_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'2' ->
             match board with
-            |Board(_,_,_,(_,Blank,_,_,_,_),_,_,_) -> true
-            |_ -> false
+            |Board(_,_,_,(_,Blank,_,_,_,_),_,_,_) -> "Blank"
+            |Board(_,_,_,(_,Black,_,_,_,_),_,_,_) -> "Black"
+            |Board(_,_,_,(_,White,_,_,_,_),_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'3'  ->
             match board with
-            |Board(_,_,_,(_,_,Blank,_,_,_),_,_,_) -> true
-            |_ -> false
+            |Board(_,_,_,(_,_,Blank,_,_,_),_,_,_) -> "Blank"
+            |Board(_,_,_,(_,_,Black,_,_,_),_,_,_) -> "Black"
+            |Board(_,_,_,(_,_,White,_,_,_),_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'5' ->
             match board with
-            |Board(_,_,_,(_,_,_,Blank,_,_),_,_,_) -> true
-            |_ -> false
+            |Board(_,_,_,(_,_,_,Blank,_,_),_,_,_) -> "Blank"
+            |Board(_,_,_,(_,_,_,Black,_,_),_,_,_) -> "Black"
+            |Board(_,_,_,(_,_,_,White,_,_),_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'6' ->
             match board with
-            |Board(_,_,_,(_,_,_,_,Blank,_),_,_,_) -> true
-            |_ -> false
+            |Board(_,_,_,(_,_,_,_,Blank,_),_,_,_) -> "Blank"
+            |Board(_,_,_,(_,_,_,_,Black,_),_,_,_) -> "Black"
+            |Board(_,_,_,(_,_,_,_,White,_),_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'7'  ->
             match board with
-            |Board(_,_,_,(_,_,_,_,_,Blank),_,_,_) -> true
-            |_ -> false
+            |Board(_,_,_,(_,_,_,_,_,Blank),_,_,_) -> "Blank"
+            |Board(_,_,_,(_,_,_,_,_,Black),_,_,_) -> "Black"
+            |Board(_,_,_,(_,_,_,_,_,White),_,_,_) -> "White"
+            |_ -> failwith "wut"
     |'E', y ->
         match y with 
         |'3' ->
             match board with
-            |Board(_,_,(Blank,_,_),_,_,_,_) -> true
-            |_ -> false
+            |Board(_,_,(Blank,_,_),_,_,_,_) -> "Blank"
+            |Board(_,_,(Black,_,_),_,_,_,_) -> "Black"
+            |Board(_,_,(White,_,_),_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'4' ->
             match board with
-            |Board(_,_,(_,Blank,_),_,_,_,_) -> true
-            |_ -> false
+            |Board(_,_,(_,Blank,_),_,_,_,_) -> "Blank"
+            |Board(_,_,(_,Black,_),_,_,_,_) -> "Black"
+            |Board(_,_,(_,White,_),_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'5'  ->
             match board with
-            |Board(_,_,(_,_,Blank),_,_,_,_) -> true
-            |_ -> false
+            |Board(_,_,(_,_,Blank),_,_,_,_) -> "Blank"
+            |Board(_,_,(_,_,Black),_,_,_,_) -> "Black"
+            |Board(_,_,(_,_,White),_,_,_,_) -> "White"
+            |_ -> failwith "wut"
     |'F', y ->
         match y with 
         |'2' ->
             match board with
-            |Board(_,(Blank,_,_),_,_,_,_,_) -> true
-            |_ -> false
+            |Board(_,(Blank,_,_),_,_,_,_,_) -> "Blank"
+            |Board(_,(Black,_,_),_,_,_,_,_) -> "Black"
+            |Board(_,(White,_,_),_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'4' ->
             match board with
-            |Board(_,(_,Blank,_),_,_,_,_,_) -> true
-            |_ -> false
+            |Board(_,(_,Blank,_),_,_,_,_,_) -> "Blank"
+            |Board(_,(_,Black,_),_,_,_,_,_) -> "Blank"
+            |Board(_,(_,White,_),_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'6'  ->
             match board with
-            |Board(_,(_,_,Blank),_,_,_,_,_) -> true
-            |_ -> false
+            |Board(_,(_,_,Blank),_,_,_,_,_) -> "Blank"
+            |Board(_,(_,_,Black),_,_,_,_,_) -> "Black"
+            |Board(_,(_,_,White),_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
     |'G', y ->
         match y with 
         |'1' ->
             match board with
-            |Board((Blank,_,_),_,_,_,_,_,_) -> true
-            |_ -> false
+            |Board((Blank,_,_),_,_,_,_,_,_) -> "Blank"
+            |Board((Black,_,_),_,_,_,_,_,_) -> "Black"
+            |Board((White,_,_),_,_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'4' ->
             match board with
-            |Board((_,Blank,_),_,_,_,_,_,_) -> true
-            |_ -> false
+            |Board((_,Blank,_),_,_,_,_,_,_) -> "Blank"
+            |Board((_,Black,_),_,_,_,_,_,_) -> "Black"
+            |Board((_,White,_),_,_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
         |'7'  ->
             match board with
-            |Board((_,_,Blank),_,_,_,_,_,_) -> true
-            |_ -> false
-    |_ -> false
+            |Board((_,_,Blank),_,_,_,_,_,_) -> "Blank"
+            |Board((_,_,Black),_,_,_,_,_,_) -> "Black"
+            |Board((_,_,White),_,_,_,_,_,_) -> "White"
+            |_ -> failwith "wut"
+    |_ -> failwith "wut"
 
 let gameCheck board =
     Placing board
 
+(*let checkMills board=
+    let mills = [["A1";"A4";"A7"];["B2";"B4";"B6"];["C3";"C4";"C5"];["D1";"D2";"D3"];["D5";"D6";"D7"];
+                ["E3";"E4";"E5"];["F2";"F4";"F6"];["G1";"G4";"G7"];["A1";"D1";"G1"];["B2";"D2";"F2"];
+                ["C3";"D3";"E3"];["A4";"B4";"C4"];["E4";"F4";"G4"];["C5";"D5";"E5"];["B6";"D6";"F6"];
+                ["A7";"D7";"G7"];["A1";"B2";"C3"];["A7";"B6";"C5"];["G1";"F2";"E3"];["G7";"F6";"E5"]]
+    let mill = List.exists (fun x -> 
+                                match available board x.[0] with
+                                | "Black" -> match available board x.[1] with
+                                             | "Black" -> match available board x.[2] with
+                                                          | "Black" -> true
+                                                          | _ -> false 
+                                             | _ -> false 
+                                | "White" -> match available board x.[1] with
+                                             | "White" -> match available board x.[2] with
+                                                          | "White" -> true
+                                                          | _ -> false 
+                                             | _ -> false                           
+                                | _ -> false 
+                         ) mills 
+*)
+// we just commented this out so that what we have working would run (the players can place cows)
+
 let move (player: Cell) (Board(rowA, rowB, rowC,rowD, rowE,rowF, rowG)) pos =
-    let newBoard = 
-        let changeCol column (a,b,c) = 
-            match column with
+    let newBoard =  // has to create a new board with all the same symbols as the previous one 
+                    // except for the given position
+                    // becuase things are immutable 
+        let changeCol column (a,b,c) =  // changes the given position to the character
+                                        // of the player whose turn it is 
+            match column with            
             |1 -> player, b, c
             |2 -> a,player,c
             |3-> a,b, player
             |_ -> failwith "Invalid move"
-        let changeColLong col (a,b,c,d,e,f)=
+        let changeColLong col (a,b,c,d,e,f)=    // does the same for the exception of the row with six positions   
             match col with
             |1 -> player, b, c,d,e,f
             |2 -> a,player,c,d,e,f
@@ -259,7 +303,7 @@ let move (player: Cell) (Board(rowA, rowB, rowC,rowD, rowE,rowF, rowG)) pos =
             |5 -> a,b,c,d,e, player
             |6-> a,b, c,d,e,player
             |_ -> failwith "Invalid move"
-        let data =
+        let data =  // uses the name of the position and the above functions to update the position in the row 
             match pos with
             |'A',y ->
                 match y with
@@ -300,34 +344,48 @@ let move (player: Cell) (Board(rowA, rowB, rowC,rowD, rowE,rowF, rowG)) pos =
                 |'4' ->  rowA, rowB, rowC,rowD, rowE,rowF,changeCol 2 rowG
                 |'7' ->  rowA, rowB, rowC,rowD, rowE,rowF,changeCol 3 rowG
         Board data
-    gameCheck newBoard  
+    gameCheck newBoard  // should probably swap players and call execute again here 
             
 let rec execute (Player: Cell)board =
-    System.Console.Clear ()
+    System.Console.Clear () // nice fresh start 
     printBoard board
-    printf "%A' s turn to go. Enter position you want to place a cow on \n"Player 
+    printf "%A's turn to go. Enter position you want to place a cow on \n" Player 
     let x = (System.Console.ReadLine())
-    let playerMove = x.[0], x.[1]
-    match available board playerMove with 
-    |true-> move Player board playerMove    
-    |_-> execute Player board
+    let playerMove = char(x.[0]), char(x.[1])   // takes the input postion and seperates the position name into
+                                    // X and Y co-ords
+                                    // we need to implement some sort of catch for invalid data
+                                    // ~ needs to be only two charaters long
+    match available board playerMove with   // to make sure it's a real option and not already occupied 
+    |"Blank"-> move Player board playerMove    
+    |_-> execute Player board // printf "position taken, pls try another" // repeats until valid input is given 
 
 let rec executeGame currentPlayer board=
     match execute currentPlayer board with 
     |Placing newBoard -> executeGame(swapPlayer currentPlayer) newBoard
-
-
-
-
- 
-
-
-        
+       
 [<EntryPoint>]
 let main argv = 
     printfn "%A" argv
-    
-    executeGame Black blankBoard
+
+    printfn " Morabaraba Game Rules \n
+    There are three main phases to the game:\n
+            * Placing the cows \n
+            * Moving the cows \n
+            * Flying the cow \n
+            For placing Cows: \n
+            At the beginning, each player has 12 cows (pieces); one player has Black cows, the other player has\n White cows.The board is empty to start with.
+            The player with the Black cows moves first.\n Each turn consists of placing a cow onto the board. Cows can only be placed on empty locations. \n
+            Choose a location by entering a CAPITAL letter and number representing the cell you want to place your cow!\n"
+    printfn "Black starts the game: press Enter to begin."
+   // printBoard blankBoard
+    System.Console.ReadLine()
+
+    executeGame Black blankBoard // Black player starts
+                        
+
 
     System.Console.ReadLine()
+
     0 // return an integer exit code
+
+
