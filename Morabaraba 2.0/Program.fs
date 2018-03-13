@@ -95,8 +95,9 @@ let printBoard (Board (rowA, rowB, rowC,rowD, rowE,rowF, rowG)) =
     let (x,y,z)=rowG
     printf "G %c--------%c--------%c  \n\n" (printCells x) (printCells y) (printCells z)
 
-let available board position =  // uses pattern matching to check if the given position is occupied or not
+let rec available board position =  // uses pattern matching to check if the given position is occupied or not
                                 // and if not, whether it is Black or White
+
     match position with
     |'A', y ->              
         match y with 
@@ -105,19 +106,19 @@ let available board position =  // uses pattern matching to check if the given p
             |Board((Blank,_,_),_,_,_,_,_,_) -> "Blank"
             |Board((Black,_,_),_,_,_,_,_,_) -> "Black"
             |Board((White,_,_),_,_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'4' ->
             match board with
             |Board((_,Blank,_),_,_,_,_,_,_) -> "Blank"
             |Board((_,Black,_),_,_,_,_,_,_) -> "Black"
             |Board((_,White,_),_,_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'7'  ->
             match board with
             |Board((_,_,Blank),_,_,_,_,_,_) -> "Blank"
             |Board((_,_,Black),_,_,_,_,_,_) -> "Black"
             |Board((_,_,White),_,_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
     |'B', y ->
         match y with 
         |'2' ->
@@ -125,19 +126,19 @@ let available board position =  // uses pattern matching to check if the given p
             |Board(_,(Blank,_,_),_,_,_,_,_) -> "Blank"
             |Board(_,(Black,_,_),_,_,_,_,_) -> "Black"
             |Board(_,(White,_,_),_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'4' ->
             match board with
             |Board(_,(_,Blank,_),_,_,_,_,_) -> "Blank"
             |Board(_,(_,Black,_),_,_,_,_,_) -> "Black"
             |Board(_,(_,White,_),_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'6'  ->
             match board with
             |Board(_,(_,_,Blank),_,_,_,_,_) -> "Blank"
             |Board(_,(_,_,Black),_,_,_,_,_) -> "Black"
             |Board(_,(_,_,White),_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
     |'C', y ->
         match y with 
         |'3' ->
@@ -145,19 +146,19 @@ let available board position =  // uses pattern matching to check if the given p
             |Board(_,_,(Blank,_,_),_,_,_,_) -> "Blank"
             |Board(_,_,(Black,_,_),_,_,_,_) -> "Black"
             |Board(_,_,(White,_,_),_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'4' ->
             match board with
             |Board(_,_,(_,Blank,_),_,_,_,_) -> "Blank"
             |Board(_,_,(_,Black,_),_,_,_,_) -> "Black"
             |Board(_,_,(_,White,_),_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'5'  ->
             match board with
             |Board(_,_,(_,_,Blank),_,_,_,_) -> "Blank"
             |Board(_,_,(_,_,Black),_,_,_,_) -> "Black"
             |Board(_,_,(_,_,White),_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
     |'D', y ->
         match y with 
         |'1' ->
@@ -165,37 +166,37 @@ let available board position =  // uses pattern matching to check if the given p
             |Board(_,_,_,(Blank,_,_,_,_,_),_,_,_) -> "Blank"
             |Board(_,_,_,(Black,_,_,_,_,_),_,_,_) -> "Black"
             |Board(_,_,_,(White,_,_,_,_,_),_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'2' ->
             match board with
             |Board(_,_,_,(_,Blank,_,_,_,_),_,_,_) -> "Blank"
             |Board(_,_,_,(_,Black,_,_,_,_),_,_,_) -> "Black"
             |Board(_,_,_,(_,White,_,_,_,_),_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'3'  ->
             match board with
             |Board(_,_,_,(_,_,Blank,_,_,_),_,_,_) -> "Blank"
             |Board(_,_,_,(_,_,Black,_,_,_),_,_,_) -> "Black"
             |Board(_,_,_,(_,_,White,_,_,_),_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'5' ->
             match board with
             |Board(_,_,_,(_,_,_,Blank,_,_),_,_,_) -> "Blank"
             |Board(_,_,_,(_,_,_,Black,_,_),_,_,_) -> "Black"
             |Board(_,_,_,(_,_,_,White,_,_),_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'6' ->
             match board with
             |Board(_,_,_,(_,_,_,_,Blank,_),_,_,_) -> "Blank"
             |Board(_,_,_,(_,_,_,_,Black,_),_,_,_) -> "Black"
             |Board(_,_,_,(_,_,_,_,White,_),_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'7'  ->
             match board with
             |Board(_,_,_,(_,_,_,_,_,Blank),_,_,_) -> "Blank"
             |Board(_,_,_,(_,_,_,_,_,Black),_,_,_) -> "Black"
             |Board(_,_,_,(_,_,_,_,_,White),_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
     |'E', y ->
         match y with 
         |'3' ->
@@ -203,19 +204,19 @@ let available board position =  // uses pattern matching to check if the given p
             |Board(_,_,(Blank,_,_),_,_,_,_) -> "Blank"
             |Board(_,_,(Black,_,_),_,_,_,_) -> "Black"
             |Board(_,_,(White,_,_),_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'4' ->
             match board with
             |Board(_,_,(_,Blank,_),_,_,_,_) -> "Blank"
             |Board(_,_,(_,Black,_),_,_,_,_) -> "Black"
             |Board(_,_,(_,White,_),_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'5'  ->
             match board with
             |Board(_,_,(_,_,Blank),_,_,_,_) -> "Blank"
             |Board(_,_,(_,_,Black),_,_,_,_) -> "Black"
             |Board(_,_,(_,_,White),_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
     |'F', y ->
         match y with 
         |'2' ->
@@ -223,19 +224,19 @@ let available board position =  // uses pattern matching to check if the given p
             |Board(_,(Blank,_,_),_,_,_,_,_) -> "Blank"
             |Board(_,(Black,_,_),_,_,_,_,_) -> "Black"
             |Board(_,(White,_,_),_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'4' ->
             match board with
             |Board(_,(_,Blank,_),_,_,_,_,_) -> "Blank"
             |Board(_,(_,Black,_),_,_,_,_,_) -> "Blank"
             |Board(_,(_,White,_),_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'6'  ->
             match board with
             |Board(_,(_,_,Blank),_,_,_,_,_) -> "Blank"
             |Board(_,(_,_,Black),_,_,_,_,_) -> "Black"
             |Board(_,(_,_,White),_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
     |'G', y ->
         match y with 
         |'1' ->
@@ -243,45 +244,51 @@ let available board position =  // uses pattern matching to check if the given p
             |Board((Blank,_,_),_,_,_,_,_,_) -> "Blank"
             |Board((Black,_,_),_,_,_,_,_,_) -> "Black"
             |Board((White,_,_),_,_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'4' ->
             match board with
             |Board((_,Blank,_),_,_,_,_,_,_) -> "Blank"
             |Board((_,Black,_),_,_,_,_,_,_) -> "Black"
             |Board((_,White,_),_,_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
+            //|_ -> failwith "wut"
         |'7'  ->
             match board with
             |Board((_,_,Blank),_,_,_,_,_,_) -> "Blank"
             |Board((_,_,Black),_,_,_,_,_,_) -> "Black"
             |Board((_,_,White),_,_,_,_,_,_) -> "White"
-            |_ -> failwith "wut"
-    |_ -> failwith "wut"
+            //|_ -> failwith "wut"
+    |_ -> //printf "not valid"
+          "wut"
+           
+         (* printf "Enter position you want to place a cow on \n"
+          let x = (System.Console.ReadLine())
+          let playerMove = char(x.[0]), char(x.[1])
+          available board playerMove //execute Player board*)
+            
 
 let gameCheck board =
     Placing board
 
-(*let checkMills board=
+let checkMills board=
     let mills = [["A1";"A4";"A7"];["B2";"B4";"B6"];["C3";"C4";"C5"];["D1";"D2";"D3"];["D5";"D6";"D7"];
                 ["E3";"E4";"E5"];["F2";"F4";"F6"];["G1";"G4";"G7"];["A1";"D1";"G1"];["B2";"D2";"F2"];
                 ["C3";"D3";"E3"];["A4";"B4";"C4"];["E4";"F4";"G4"];["C5";"D5";"E5"];["B6";"D6";"F6"];
                 ["A7";"D7";"G7"];["A1";"B2";"C3"];["A7";"B6";"C5"];["G1";"F2";"E3"];["G7";"F6";"E5"]]
-    let mill = List.exists (fun x -> 
-                                match available board x.[0] with
-                                | "Black" -> match available board x.[1] with
-                                             | "Black" -> match available board x.[2] with
-                                                          | "Black" -> true
-                                                          | _ -> false 
-                                             | _ -> false 
-                                | "White" -> match available board x.[1] with
-                                             | "White" -> match available board x.[2] with
-                                                          | "White" -> true
-                                                          | _ -> false 
-                                             | _ -> false                           
-                                | _ -> false 
+    List.choose (fun (x: string list) -> 
+                               match available board (x.[0].[0], x.[0].[1]) with
+                                | "Black" -> match available board (x.[1].[0], x.[1].[1]) with
+                                             | "Black" -> match available board (x.[2].[0], x.[2].[1]) with
+                                                          | "Black" -> Some x 
+                                                          | _ -> None 
+                                             | _ -> None 
+                                | "White" -> match available board (x.[1].[0], x.[1].[1]) with
+                                             | "White" -> match available board (x.[2].[0], x.[2].[1]) with
+                                                          | "White" -> Some x
+                                                          | _ -> None 
+                                             | _ -> None                           
+                                | _ -> None 
                          ) mills 
-*)
-// we just commented this out so that what we have working would run (the players can place cows)
+                   
 
 let move (player: Cell) (Board(rowA, rowB, rowC,rowD, rowE,rowF, rowG)) pos =
     let newBoard =  // has to create a new board with all the same symbols as the previous one 
@@ -357,7 +364,8 @@ let rec execute (Player: Cell)board =
                                     // ~ needs to be only two charaters long
     match available board playerMove with   // to make sure it's a real option and not already occupied 
     |"Blank"-> move Player board playerMove    
-    |_-> execute Player board // printf "position taken, pls try another" // repeats until valid input is given 
+    |_-> printf "position taken, pls try another"
+         execute Player board // repeats until valid input is given 
 
 let rec executeGame currentPlayer board=
     match execute currentPlayer board with 
@@ -387,5 +395,7 @@ let main argv =
     System.Console.ReadLine()
 
     0 // return an integer exit code
+
+
 
 
