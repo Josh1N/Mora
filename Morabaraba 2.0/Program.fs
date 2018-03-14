@@ -53,12 +53,13 @@ type State =    // a field for each state
 |Flying of GameBoard
 // will also need on for winning and drawing (is it possible to draw in Morabaraba?)
 
-let swapPlayer x=   // how turns will be implemented 
+let swapPlayer x =   // how turns will be implemented 
     match x with 
     |Black ->White
     |White ->Black
-    |Blank -> Blank //failwith "Nooooooooooooooooooooo" // maybe change this to Blank ]
-                    // nope no sense made 
+    |Blank -> Blank 
+
+let numMoves = [] 
            
 let blankBoard =    // creating a Gameboard with all blank positions 
     let blankRow = Blank,Blank, Blank
@@ -119,6 +120,11 @@ let rec available board position =  // uses pattern matching to check if the giv
             |Board((_,_,Black),_,_,_,_,_,_) -> "Black"
             |Board((_,_,White),_,_,_,_,_,_) -> "White"
             //|_ -> failwith "wut"
+        |_ -> System.Console.WriteLine "Invalid input. Press ENTER to continue.."
+              System.Console.ReadLine()
+              
+
+              
     |'B', y ->
         match y with 
         |'2' ->
@@ -138,7 +144,8 @@ let rec available board position =  // uses pattern matching to check if the giv
             |Board(_,(_,_,Blank),_,_,_,_,_) -> "Blank"
             |Board(_,(_,_,Black),_,_,_,_,_) -> "Black"
             |Board(_,(_,_,White),_,_,_,_,_) -> "White"
-            //|_ -> failwith "wut"
+        |_ -> System.Console.WriteLine "Invalid input. Press ENTER to continue.."
+              System.Console.ReadLine()
     |'C', y ->
         match y with 
         |'3' ->
@@ -158,7 +165,8 @@ let rec available board position =  // uses pattern matching to check if the giv
             |Board(_,_,(_,_,Blank),_,_,_,_) -> "Blank"
             |Board(_,_,(_,_,Black),_,_,_,_) -> "Black"
             |Board(_,_,(_,_,White),_,_,_,_) -> "White"
-            //|_ -> failwith "wut"
+        |_ -> System.Console.WriteLine "Invalid input. Press ENTER to continue.."
+              System.Console.ReadLine()
     |'D', y ->
         match y with 
         |'1' ->
@@ -196,7 +204,8 @@ let rec available board position =  // uses pattern matching to check if the giv
             |Board(_,_,_,(_,_,_,_,_,Blank),_,_,_) -> "Blank"
             |Board(_,_,_,(_,_,_,_,_,Black),_,_,_) -> "Black"
             |Board(_,_,_,(_,_,_,_,_,White),_,_,_) -> "White"
-            //|_ -> failwith "wut"
+        |_ -> System.Console.WriteLine "Invalid input. Press ENTER to continue.."
+              System.Console.ReadLine()
     |'E', y ->
         match y with 
         |'3' ->
@@ -216,7 +225,8 @@ let rec available board position =  // uses pattern matching to check if the giv
             |Board(_,_,(_,_,Blank),_,_,_,_) -> "Blank"
             |Board(_,_,(_,_,Black),_,_,_,_) -> "Black"
             |Board(_,_,(_,_,White),_,_,_,_) -> "White"
-            //|_ -> failwith "wut"
+        |_ -> System.Console.WriteLine "Invalid input. Press ENTER to continue.."
+              System.Console.ReadLine()
     |'F', y ->
         match y with 
         |'2' ->
@@ -236,7 +246,8 @@ let rec available board position =  // uses pattern matching to check if the giv
             |Board(_,(_,_,Blank),_,_,_,_,_) -> "Blank"
             |Board(_,(_,_,Black),_,_,_,_,_) -> "Black"
             |Board(_,(_,_,White),_,_,_,_,_) -> "White"
-            //|_ -> failwith "wut"
+        |_ -> System.Console.WriteLine "Invalid input. Press ENTER to continue.."
+              System.Console.ReadLine()
     |'G', y ->
         match y with 
         |'1' ->
@@ -256,8 +267,9 @@ let rec available board position =  // uses pattern matching to check if the giv
             |Board((_,_,Blank),_,_,_,_,_,_) -> "Blank"
             |Board((_,_,Black),_,_,_,_,_,_) -> "Black"
             |Board((_,_,White),_,_,_,_,_,_) -> "White"
-            //|_ -> failwith "wut"
-    |_ -> //printf "not valid"
+        |_ -> System.Console.WriteLine "Invalid input. Press ENTER to continue.."
+              System.Console.ReadLine()
+    |_ -> printf "not valid"
           "wut"
            
          (* printf "Enter position you want to place a cow on \n"
@@ -269,11 +281,13 @@ let rec available board position =  // uses pattern matching to check if the giv
 let gameCheck board =
     Placing board
 
-let checkMills board=
-    let mills = [["A1";"A4";"A7"];["B2";"B4";"B6"];["C3";"C4";"C5"];["D1";"D2";"D3"];["D5";"D6";"D7"];
+let mills = [["A1";"A4";"A7"];["B2";"B4";"B6"];["C3";"C4";"C5"];["D1";"D2";"D3"];["D5";"D6";"D7"];
                 ["E3";"E4";"E5"];["F2";"F4";"F6"];["G1";"G4";"G7"];["A1";"D1";"G1"];["B2";"D2";"F2"];
                 ["C3";"D3";"E3"];["A4";"B4";"C4"];["E4";"F4";"G4"];["C5";"D5";"E5"];["B6";"D6";"F6"];
                 ["A7";"D7";"G7"];["A1";"B2";"C3"];["A7";"B6";"C5"];["G1";"F2";"E3"];["G7";"F6";"E5"]]
+
+let checkMills board mills =
+    
     List.choose (fun (x: string list) -> 
                                match available board (x.[0].[0], x.[0].[1]) with
                                 | "Black" -> match available board (x.[1].[0], x.[1].[1]) with
@@ -290,6 +304,7 @@ let checkMills board=
                          ) mills 
                    
 
+    
 let move (player: Cell) (Board(rowA, rowB, rowC,rowD, rowE,rowF, rowG)) pos =
     let newBoard =  // has to create a new board with all the same symbols as the previous one 
                     // except for the given position
@@ -352,7 +367,9 @@ let move (player: Cell) (Board(rowA, rowB, rowC,rowD, rowE,rowF, rowG)) pos =
                 |'7' ->  rowA, rowB, rowC,rowD, rowE,rowF,changeCol 3 rowG
         Board data
     gameCheck newBoard  // should probably swap players and call execute again here 
-            
+ 
+let millKill validMills=
+ 
 let rec execute (Player: Cell)board =
     System.Console.Clear () // nice fresh start 
     printBoard board
@@ -363,18 +380,23 @@ let rec execute (Player: Cell)board =
                                     // we need to implement some sort of catch for invalid data
                                     // ~ needs to be only two charaters long
     match available board playerMove with   // to make sure it's a real option and not already occupied 
-    |"Blank"-> move Player board playerMove    
+    |"Blank"-> move Player board playerMove
+               let validMills = CheckMills board mills 
+               match validMills.Length >0 with 
+               |true-> millKill validMills 
+               |_->
     |_-> printf "position taken, pls try another"
          execute Player board // repeats until valid input is given 
+ 
 
-let rec executeGame currentPlayer board=
-    match execute currentPlayer board with 
+let rec executeGame currentPlayer board =
+    match execute currentPlayer board  with 
     |Placing newBoard -> executeGame(swapPlayer currentPlayer) newBoard
        
 [<EntryPoint>]
 let main argv = 
     printfn "%A" argv
-
+  
     printfn " Morabaraba Game Rules \n
     There are three main phases to the game:\n
             * Placing the cows \n
